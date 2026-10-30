@@ -22,5 +22,5 @@ variable "private_key_path" {
 variable "bi_warehouse_size" {
   description = "Size of the warehouse used by Power BI"
   type        = string
-  default     = "XSMALL"
+  default     = "SMALL"
 }
