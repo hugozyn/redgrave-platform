@@ -1,0 +1,23 @@
+version: 2
+
+# Bronze = the raw tables loaded by the ingestion lab. dbt does not copy them:
+# it declares them as sources and reads them where they are.
+sources:
+  - name: bronze
+    database: REDGRAVE
+    schema: BRONZE
+    description: "Raw copy of the on-prem megastore Postgres, loaded with COPY INTO."
+    # config:
+    #   loaded_at_field: _loaded_at
+    #   freshness:
+    #     warn_after: {count: 24, period: hour}
+    #     error_after: {count: 90, period: day}
+    tables:
+      - name: products
+        description: "Club shop catalogue, one row per product."
+        config:
+          freshness: null        # reference data: changes rarely, no freshness rule
+      - name: orders
+        description: "One row per order."
+      - name: order_items
+        description: "One row per order line."

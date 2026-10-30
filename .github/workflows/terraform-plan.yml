@@ -1,0 +1,39 @@
+# Runs `terraform plan` on every pull request that touches terraform/.
+# The plan is shown in the job log so the team reviews it before anyone applies.
+# Repository secrets to create (Settings > Secrets and variables > Actions):
+#   SF_ORGANIZATION_NAME, SF_ACCOUNT_NAME, SF_USER, SF_PRIVATE_KEY (content of rsa_key.p8)
+name: terraform-plan
+
+on:
+  pull_request:
+    paths: ["terraform/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    env:
+      TF_VAR_organization_name: ${{ secrets.SF_ORGANIZATION_NAME }}
+      TF_VAR_account_name: ${{ secrets.SF_ACCOUNT_NAME }}
+      TF_VAR_user: ${{ secrets.SF_USER }}
+      TF_VAR_private_key_path: ${{ runner.temp }}/rsa_key.p8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.0
+      - name: Write the private key from the secret (never echo it)
+        env:
+          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
+        run: |
+          umask 077
+          printf '%s\n' "$SF_PRIVATE_KEY" > "$RUNNER_TEMP/rsa_key.p8"
+      - run: terraform fmt -check
+      - run: terraform init -input=false
+      - run: terraform validate
+      - run: terraform plan -input=false -no-color

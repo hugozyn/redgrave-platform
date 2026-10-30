@@ -1,0 +1,15 @@
+# Connection settings. No secret in this file: everything comes from environment
+# variables (the same ones as the ingestion lab), so it is safe to commit.
+redgrave:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_FILE') }}"
+      role: SYSADMIN
+      warehouse: REDGRAVE_WH
+      database: REDGRAVE
+      schema: SILVER
+      threads: 4

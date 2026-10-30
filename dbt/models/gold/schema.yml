@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: gold_revenue_by_channel
+    description: "Paid revenue per channel. Expected total: 21,436 GBP."
+    columns:
+      - name: channel
+        data_tests: [unique, not_null]
+  - name: gold_daily_sales
+    description: "Daily orders, refunds and paid revenue."
+    columns:
+      - name: order_date
+        data_tests: [unique, not_null]
+  - name: gold_top_products
+    description: "Products ranked by paid revenue."
+    columns:
+      - name: sku
+        data_tests: [unique, not_null]

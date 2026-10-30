@@ -1,0 +1,29 @@
+# AFC Redgrave · dbt project (bronze -> silver -> gold)
+name: redgrave_dbt
+version: "1.0.0"
+config-version: 2
+profile: redgrave
+
+# The course pins dbt 1.11. A newer dbt refuses to run this project:
+# that is the "works on my machine" failure shown in the Docker lab.
+require-dbt-version: [">=1.11.0", "<1.12.0"]
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages", "logs"]
+
+models:
+  redgrave_dbt:
+    silver:
+      +schema: SILVER
+      +materialized: view      # cheap, always reflects bronze
+    gold:
+      +schema: GOLD
+      +materialized: table     # read all day by dashboards, rebuilt at each run
+
+# After every dbt run / test / build, write the results into REDGRAVE.LAB.DBT_RESULTS
+# so the instructor can check them from your Snowflake account.
+on-run-end:
+  - "{{ log_run_results(results) }}"

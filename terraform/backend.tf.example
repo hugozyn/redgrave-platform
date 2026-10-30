@@ -1,0 +1,22 @@
+# REMOTE STATE (demonstrated by the teacher, not required in the lab).
+# Rename to backend.tf and run `terraform init -migrate-state` to move the state
+# from your laptop to a shared, versioned, locked bucket.
+
+# Google Cloud Storage (locking is built in):
+# terraform {
+#   backend "gcs" {
+#     bucket = "redgrave-terraform-state"
+#     prefix = "platform"
+#   }
+# }
+
+# AWS S3 (use_lockfile = native S3 locking):
+# terraform {
+#   backend "s3" {
+#     bucket       = "redgrave-terraform-state"
+#     key          = "platform/terraform.tfstate"
+#     region       = "us-west-2"
+#     encrypt      = true
+#     use_lockfile = true
+#   }
+# }
